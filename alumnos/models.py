@@ -18,15 +18,15 @@ class Alumno(models.Model):
 
     fecha_vencimiento = models.DateField()
 
-def save(self, *args, **kwargs):
-    # ID basado en nombre
-    self.id = f"{self.apellidos.strip().replace(' ', '_')}_{self.nombres.strip().replace(' ', '_')}".lower()
+    def save(self, *args, **kwargs):
+        # ID basado en nombre
+        self.id = f"{self.apellidos.strip().replace(' ', '_')}_{self.nombres.strip().replace(' ', '_')}".lower()
 
-    # Solo recalcular si NO viene definida desde la vista
-    if not self.fecha_vencimiento:
-        self.fecha_vencimiento = self.fecha_pago + timedelta(days=30 * self.meses_pagados)
+        # Solo recalcular si NO viene definida desde la vista
+        if not self.fecha_vencimiento:
+            self.fecha_vencimiento = self.fecha_pago + timedelta(days=30 * self.meses_pagados)
 
-    super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
     def __str__(self):
