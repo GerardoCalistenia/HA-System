@@ -30,43 +30,19 @@ def lista_alumnos(request):
 @login_required
 def editar_alumno(request, alumno_id):
     alumno = get_object_or_404(Alumno, id=alumno_id)
-    hoy = timezone.localdate()
 
     if request.method == "POST":
         form = EditarAlumnoForm(request.POST, instance=alumno)
 
         if form.is_valid():
-            # Obtenemos valores modificados ANTES de guardar
-            nuevo_pago = form.cleaned_data["fecha_pago"]
-
-            # CASO 1: Si la nueva fecha de pago es mayor a hoy → se considera pago anticipado
-            if alumno.fecha_vencimiento >= hoy and nuevo_pago > alumno.fecha_pago:
-                # Acumular días desde su vencimiento actual
-                nueva_vencimiento = alumno.fecha_vencimiento + timedelta(days=30)
-
-            # CASO 2: Si ya estaba vencido → reset desde nueva fecha de pago
-            elif alumno.fecha_vencimiento < hoy:
-                nueva_vencimiento = nuevo_pago + timedelta(days=30)
-
-            # CASO 3: Solo corrección de fecha, no debe resetear días
-            else:
-                dias_restantes = (alumno.fecha_vencimiento - alumno.fecha_pago).days
-                nueva_vencimiento = nuevo_pago + timedelta(days=dias_restantes)
-
-            # Aplicar los cambios manualmente sin perder acumulación
-            alumno.fecha_pago = nuevo_pago
-            alumno.telefono = form.cleaned_data["telefono"]
-            alumno.fecha_nacimiento = form.cleaned_data["fecha_nacimiento"]
-            alumno.fecha_vencimiento = nueva_vencimiento
-
-            alumno.save()  # Guardar sin recalcular mal
-
+            form.save()   # NO controlamos fechas aquí
             return redirect("lista_alumnos")
 
     else:
         form = EditarAlumnoForm(instance=alumno)
 
     return render(request, "editar_alumno.html", {"form": form, "alumno": alumno})
+
 
 @login_required
 def eliminar_alumno(request, alumno_id):
