@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Alumnos con membresía vencida</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Teléfono</th>
+        <th>Ultima fecha de pago</th>
+        <th>Fecha de vencimiento</th>
+    </tr>
+
+    {% for alumno in alumnos %}
+    <tr>
+        <td>{{ alumno.nombres }}</td>
+        <td>{{ alumno.apellidos }}</td>
+        <td>{{ alumno.telefono }}</td>
+        <td>{{ alumno.fecha_pago }}</td>
+        <td>{{ alumno.fecha_vencimiento }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4" style="text-align:center;">No hay alumnos vencidos.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'menu_principal' %}">Volver al menú</a>
+
+{% endblock %}

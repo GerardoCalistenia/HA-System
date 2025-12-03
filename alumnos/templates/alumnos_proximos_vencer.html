@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Alumnos próximos a vencer (5 días)</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Teléfono</th>
+        <th>Vence</th>
+    </tr>
+
+    {% for alumno in alumnos %}
+    <tr>
+        <td>{{ alumno.nombres }}</td>
+        <td>{{ alumno.apellidos }}</td>
+        <td>{{ alumno.telefono }}</td>
+        <td>{{ alumno.fecha_vencimiento }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4">No hay alumnos próximos a vencer.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'menu_principal' %}">Volver al menú</a>
+
+{% endblock %}

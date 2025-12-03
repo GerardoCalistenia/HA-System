@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Lista de alumnos</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Teléfono</th>
+        <th>Ultimo pago</th>
+        <th>Membresía vence</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+        
+    </tr>
+
+    {% for alumno in alumnos %}
+    <tr>
+        <td>{{ alumno.nombres }}</td>
+        <td>{{ alumno.apellidos }}</td>
+        <td>{{ alumno.telefono }}</td>
+        <td>{{ alumno.fecha_pago }}</td>
+        <td>{{ alumno.fecha_vencimiento }}</td>
+
+        <td>
+            <a href="{% url 'editar_alumno' alumno.id %}">Editar</a>
+        </td>
+
+        <td>
+            <a href="{% url 'eliminar_alumno' alumno.id %}" style="color:red;">
+                Eliminar
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">No hay alumnos registrados.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'menu_principal' %}">Volver al menú</a>
+
+{% endblock %}

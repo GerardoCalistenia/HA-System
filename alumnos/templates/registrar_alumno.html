@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Registrar nuevo alumno</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Guardar alumno</button>
+</form>
+
+<a href="{% url 'menu_principal' %}">Volver al menú</a>
+{% endblock %}
