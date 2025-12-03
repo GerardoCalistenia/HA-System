@@ -3,13 +3,13 @@
 {% block content %}
 <h2>Renovar membresía</h2>
 
-<table border="1" cellpadding="8" cellspacing="0">
+<table>
     <tr>
-        <th>Nombre</th>
-        <th>Apellidos</th>
-        <th>Teléfono</th>
-        <th>Ultima fecha de pago</th>
-        <th>Vence</th>
+        <th class="col-nombre">Nombre</th>
+        <th class="col-apellidos">Apellidos</th>
+        <th class="col-telefono">Teléfono</th>
+        <th class="col-fecha">Última fecha de pago</th>
+        <th class="col-fecha">Vence</th>
         <th>Renovar</th>
     </tr>
 
@@ -21,12 +21,13 @@
         <td>{{ alumno.fecha_pago }}</td>
         <td>{{ alumno.fecha_vencimiento }}</td>
         <td>
-            <a href="{% url 'renovar_membresia' alumno.id %}">Renovar</a>
+            <a class="table-link" href="{% url 'renovar_membresia' alumno.id %}">Renovar</a>
         </td>
     </tr>
+
     {% empty %}
     <tr>
-        <td colspan="5">No hay alumnos registrados.</td>
+        <td colspan="6">No hay alumnos registrados.</td>
     </tr>
     {% endfor %}
 </table>

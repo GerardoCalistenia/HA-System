@@ -15,12 +15,18 @@ def registrar_alumno(request):
     if request.method == "POST":
         form = AlumnoForm(request.POST)
         if form.is_valid():
-            form.save()
+            alumno = form.save(commit=False)
+
+            # Calcular fecha de vencimiento
+            alumno.fecha_vencimiento = alumno.fecha_pago + timedelta(days=30 * alumno.meses_pagados)
+
+            alumno.save()
             return redirect("menu_principal")
     else:
         form = AlumnoForm()
 
     return render(request, "registrar_alumno.html", {"form": form})
+
 
 @login_required
 def lista_alumnos(request):
@@ -84,7 +90,7 @@ def renovar_membresia(request, alumno_id):
     hoy = timezone.localdate()
 
     if request.method == "POST":
-        meses = int(request.POST.get("meses", 1))
+        meses = int(request.POST.get("meses_pagados", 1))
 
         # Si aún no vence → acumular desde la fecha actual de vencimiento
         if alumno.fecha_vencimiento >= hoy:
@@ -93,15 +99,9 @@ def renovar_membresia(request, alumno_id):
             # Si ya venció → reiniciar desde hoy
             nueva_fecha = hoy + timedelta(days=30 * meses)
 
-        # Actualizar solo lo necesario
         alumno.fecha_pago = hoy
         alumno.meses_pagados = meses
-
-        # ⚠️ Asignar aquí ANTES del save,
-        # porque el save del modelo lo recalcularía mal
         alumno.fecha_vencimiento = nueva_fecha
-
-        # Guardar sin que el save del modelo te destruya la fecha nueva
         alumno.save()
 
         return redirect("lista_renovar")

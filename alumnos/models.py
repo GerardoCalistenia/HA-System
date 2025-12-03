@@ -3,8 +3,6 @@ from django.utils import timezone
 from datetime import timedelta
 
 class Alumno(models.Model):
-    # Identificador único basado en nombre completo
-    # Evita duplicados
     id = models.CharField(primary_key=True, max_length=255, unique=True)
 
     nombres = models.CharField(max_length=100)
@@ -19,15 +17,12 @@ class Alumno(models.Model):
     fecha_vencimiento = models.DateField()
 
     def save(self, *args, **kwargs):
-        # ID basado en nombre
-        self.id = f"{self.apellidos.strip().replace(' ', '_')}_{self.nombres.strip().replace(' ', '_')}".lower()
-
-        # Solo recalcular si NO viene definida desde la vista
-        if not self.fecha_vencimiento:
-            self.fecha_vencimiento = self.fecha_pago + timedelta(days=30 * self.meses_pagados)
+        # Generar ID seguro y limpio
+        ap = self.apellidos.strip().replace(" ", "_")
+        nom = self.nombres.strip().replace(" ", "_")
+        self.id = f"{ap}_{nom}".lower()
 
         super().save(*args, **kwargs)
-
 
     def __str__(self):
         return f"{self.apellidos}, {self.nombres}"
