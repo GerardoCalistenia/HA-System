@@ -1,6 +1,27 @@
 from django.db import models
 from django.utils import timezone
-from datetime import timedelta
+import unicodedata
+import re
+
+
+def limpiar_campo(texto):
+    if not texto:
+        return ""
+
+    # Quitar acentos
+    texto = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode("ascii")
+
+    # Quitar puntos y caracteres innecesarios
+    texto = re.sub(r"[^a-zA-Z0-9\s]", "", texto)
+
+    # Quitar espacios extras
+    texto = re.sub(r"\s+", " ", texto).strip()
+
+    # Poner todo en MAYÚSCULAS
+    texto = texto.upper()
+
+    return texto
+
 
 class Alumno(models.Model):
     id = models.CharField(primary_key=True, max_length=255, unique=True)
@@ -17,10 +38,15 @@ class Alumno(models.Model):
     fecha_vencimiento = models.DateField()
 
     def save(self, *args, **kwargs):
-        # Generar ID seguro y limpio
-        ap = self.apellidos.strip().replace(" ", "_")
-        nom = self.nombres.strip().replace(" ", "_")
-        self.id = f"{ap}_{nom}".lower()
+
+        # Limpiar antes de guardar
+        self.nombres = limpiar_campo(self.nombres)
+        self.apellidos = limpiar_campo(self.apellidos)
+
+        # Generar ID seguro (sin acentos, sin espacios dobles)
+        ap = self.apellidos.replace(" ", "_").lower()
+        nom = self.nombres.replace(" ", "_").lower()
+        self.id = f"{ap}_{nom}"
 
         super().save(*args, **kwargs)
 
