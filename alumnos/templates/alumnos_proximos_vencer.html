@@ -15,7 +15,12 @@
     <tr>
         <td>{{ alumno.nombres }}</td>
         <td>{{ alumno.apellidos }}</td>
-        <td>{{ alumno.telefono }}</td>
+        <td>
+            <a href="https://wa.me/52{{ alumno.telefono }}?text={{ 'Hola, tu mensualidad de la HA está por vencer. Te invitamos a renovarla.'|urlencode }}"
+            target="_blank">
+                {{ alumno.telefono }}
+            </a>
+        </td>
         <td>{{ alumno.fecha_vencimiento }}</td>
     </tr>
     {% empty %}
