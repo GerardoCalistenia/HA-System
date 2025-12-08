@@ -99,10 +99,52 @@
             font-weight: bold;
         }
 
+/* ===== MENÚ PRINCIPAL ===== */
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-link {
+    display: block;
+    text-align: center;
+    background: #007bff;
+    color: white !important;
+    padding: 14px;
+    font-size: 18px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    background: #0056b3;
+}
+
+.btn-logout {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    background: #c82333;
+}
+
+
     </style>
+    
 </head>
 
 <body>
+    
 
     <div class="top-bar">
         Fecha actual: {{ fecha_actual }}
@@ -115,3 +157,5 @@
 
 </body>
 </html>
+
+

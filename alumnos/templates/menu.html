@@ -4,37 +4,35 @@
 
 <h2>Menú principal</h2>
 
-<style>
-    body {
-        font-family: Arial;
-        padding: 20px;
-        max-width: 400px;
-        margin: auto;
-    }
-    .btn {
-        display: block;
-        background: #333;
-        color: white;
-        padding: 15px;
-        text-align: center;
-        text-decoration: none;
-        margin: 10px 0;
-        border-radius: 5px;
-    }
-    .logout {
-        background: #b33;
-    }
-</style>
+<div class="menu-buttons">
 
-<a class="btn" href="{% url 'registrar_alumno' %}">Registrar nuevo alumno</a>
-<a class="btn" href="{% url 'alumnos_proximos_vencer' %}">Alumnos próximos a vencer</a>
-<a class="btn" href="{% url 'lista_alumnos' %}">Mostrar todos los alumnos</a>
-<a class="btn" href="{% url 'alumnos_vencidos' %}">Alumnos vencidos</a>
-<a class="btn" href="{% url 'lista_renovar' %}">Renovar membresía</a>
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit" class="btn logout">Cerrar sesión</button>
-</form>
+    <a class="btn-link" href="{% url 'registrar_alumno' %}">
+        Registrar nuevo alumno
+    </a>
 
+    <a class="btn-link" href="{% url 'alumnos_proximos_vencer' %}">
+        Alumnos próximos a vencer
+    </a>
+
+    <a class="btn-link" href="{% url 'lista_alumnos' %}">
+        Mostrar todos los alumnos
+    </a>
+
+    <a class="btn-link" href="{% url 'alumnos_vencidos' %}">
+        Alumnos vencidos
+    </a>
+
+    <a class="btn-link" href="{% url 'lista_renovar' %}">
+        Renovar membresía
+    </a>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-logout">
+            Cerrar sesión
+        </button>
+    </form>
+
+</div>
 
 {% endblock %}
