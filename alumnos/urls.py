@@ -14,4 +14,5 @@ urlpatterns = [
     path("vencidos/", views.alumnos_vencidos, name="alumnos_vencidos"),
     path("renovar/<str:alumno_id>/", views.renovar_membresia, name="renovar_membresia"),
     path("renovar/", views.lista_renovar, name="lista_renovar"),
+    path("corte/", views.corte_caja, name="corte_caja"),
 ]

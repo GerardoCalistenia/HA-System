@@ -1,15 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<a href="{% url 'menu_principal' %}" class="btn-menu"> Volver al menú</a> 
+
 <h2>Renovar membresía</h2>
 
-<table>
+<!-- 🔍 BUSCADOR -->
+<input type="text" id="buscador" placeholder="Buscar alumno por nombre o apellido...">
+
+<table id="tablaAlumnos">
     <tr>
-        <th class="col-nombre">Nombre</th>
-        <th class="col-apellidos">Apellidos</th>
-        <th class="col-telefono">Teléfono</th>
-        <th class="col-fecha">Última fecha de pago</th>
-        <th class="col-fecha">Vence</th>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Teléfono</th>
+        <th>Última fecha de pago</th>
+        <th>Vence</th>
         <th>Renovar</th>
     </tr>
 
@@ -24,7 +30,6 @@
             <a class="table-link" href="{% url 'renovar_membresia' alumno.id %}">Renovar</a>
         </td>
     </tr>
-
     {% empty %}
     <tr>
         <td colspan="6">No hay alumnos registrados.</td>
@@ -34,5 +39,20 @@
 
 <br>
 <a href="{% url 'menu_principal' %}">Volver al menú</a>
+
+<script>
+document.getElementById("buscador").addEventListener("keyup", function() {
+    let filtro = this.value.toLowerCase();
+    let filas = document.querySelectorAll("#tablaAlumnos tr");
+
+    filas.forEach(function(fila, index) {
+        if (index === 0) return;
+
+        let texto = fila.textContent.toLowerCase();
+
+        fila.style.display = texto.includes(filtro) ? "" : "none";
+    });
+});
+</script>
 
 {% endblock %}

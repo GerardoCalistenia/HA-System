@@ -52,3 +52,15 @@ class Alumno(models.Model):
 
     def __str__(self):
         return f"{self.apellidos}, {self.nombres}"
+    
+class Pago(models.Model):
+    alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE, related_name="pagos")
+    fecha_pago = models.DateField()
+    meses_pagados = models.PositiveIntegerField()
+    fecha_inicio = models.DateField()
+    fecha_fin = models.DateField()
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.alumno} - {self.fecha_pago} - ${self.monto}"
+

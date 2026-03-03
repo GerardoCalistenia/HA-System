@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="{% url 'menu_principal' %}" class="btn-menu"> Volver al menú</a> 
+<h2>Corte de caja</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Fecha inicio:</label>
+    <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}" required>
+
+    <label>Fecha fin:</label>
+    <input type="date" name="fecha_fin" value="{{ fecha_fin }}" required>
+
+    <button type="submit">Calcular</button>
+</form>
+
+<hr>
+
+{% if total is not None and fecha_inicio and fecha_fin %}
+    <h3>
+        Total generado del {{ fecha_inicio }} al {{ fecha_fin }}:
+        ${{ total }}
+    </h3>
+
+    <table border="1">
+        <tr>
+            <th>Alumno</th>
+            <th>Fecha pago</th>
+            <th>Monto</th>
+        </tr>
+
+        {% for pago in pagos %}
+        <tr>
+            <td>{{ pago.alumno.nombres }} {{ pago.alumno.apellidos }}</td>
+            <td>{{ pago.fecha_pago }}</td>
+            <td>${{ pago.monto }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No hubo pagos en este rango.</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+<br>
+<a href="{% url 'menu_principal' %}">Volver al menú</a>
+
+{% endblock %}

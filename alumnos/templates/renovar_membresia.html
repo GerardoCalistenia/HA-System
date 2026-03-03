@@ -4,15 +4,22 @@
 <h2>Renovar membresía</h2>
 
 <p><strong>Alumno:</strong> {{ alumno.nombres }} {{ alumno.apellidos }}</p>
-<p><strong>Fecha de vencimiento actual:</strong> {{ alumno.fecha_vencimiento }}</p>
+<p><strong>Vence actualmente:</strong> {{ alumno.fecha_vencimiento }}</p>
 
 <form method="POST">
     {% csrf_token %}
+
     <label>Meses a pagar:</label>
-    <input type="number" name="meses_pagados" min="1" max="12" required>
+    <input type="number" name="meses_pagados" value="1" min="1" required>
 
     <br><br>
-    <button type="submit">Renovar</button>
+
+    <label>Monto pagado:</label>
+    <input type="number" name="monto" step="0.01" min="0" required>
+
+    <br><br>
+
+    <button type="submit">Confirmar renovación</button>
 </form>
 
 <br>

@@ -202,6 +202,26 @@
         {% endblock %}
     </div>
 
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const buscador = document.getElementById("buscador");
+    if (!buscador) return; // 👈 no afecta otras vistas
+
+    buscador.addEventListener("input", () => {
+        const texto = buscador.value.toLowerCase();
+
+        document.querySelectorAll("table tbody tr").forEach(fila => {
+            fila.style.display = fila.innerText
+                .toLowerCase()
+                .includes(texto)
+                ? ""
+                : "none";
+        });
+    });
+});
+</script>
+
+
 </body>
 
 </html>

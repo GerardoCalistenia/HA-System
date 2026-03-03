@@ -26,6 +26,11 @@
         Renovar membresía
     </a>
 
+    <a class="btn-link" href="{% url 'corte_caja' %}">
+        Corte de caja
+    </a>
+
+
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" class="btn-logout">

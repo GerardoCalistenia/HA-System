@@ -1,46 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<a href="{% url 'menu_principal' %}" class="btn-menu">Volver al menú</a> 
+
 <h2>Lista de alumnos</h2>
 
-<table border="1" cellpadding="8" cellspacing="0">
-    <tr>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Teléfono</th>
-        <th>Ultimo pago</th>
-        <th>Membresía vence</th>
-        <th>Editar</th>
-        <th>Eliminar</th>
-        
-    </tr>
+<!-- 🔍 BUSCADOR -->
+<input type="text" id="buscador" placeholder="Buscar alumno por nombre o apellido...">
 
-    {% for alumno in alumnos %}
-    <tr>
-        <td>{{ alumno.nombres }}</td>
-        <td>{{ alumno.apellidos }}</td>
-        <td>{{ alumno.telefono }}</td>
-        <td>{{ alumno.fecha_pago }}</td>
-        <td>{{ alumno.fecha_vencimiento }}</td>
+<table id="tablaAlumnos">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Teléfono</th>
+            <th>Fecha pago</th>
+            <th>Monto</th>
+            <th>Membresía vence</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
 
-        <td>
-            <a href="{% url 'editar_alumno' alumno.id %}">Editar</a>
-        </td>
+    <tbody>
+        {% for alumno in alumnos %}
+        <tr>
+            <td>{{ alumno.nombres }}</td>
+            <td>{{ alumno.apellidos }}</td>
+            <td>{{ alumno.telefono }}</td>
 
-        <td>
-            <a href="{% url 'eliminar_alumno' alumno.id %}" style="color:red;">
-                Eliminar
-            </a>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="6">No hay alumnos registrados.</td>
-    </tr>
-    {% endfor %}
+            <!-- Fecha del último pago -->
+            <td>
+                {% if alumno.pagos.last %}
+                    {{ alumno.pagos.last.fecha_pago }}
+                {% else %}
+                    {{ alumno.fecha_pago }}
+                {% endif %}
+            </td>
+
+            <!-- Monto del último pago -->
+            <td>
+                {% if alumno.pagos.last %}
+                    ${{ alumno.pagos.last.monto }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+
+            <td>{{ alumno.fecha_vencimiento }}</td>
+
+            <td>
+                <a class="table-link" href="{% url 'editar_alumno' alumno.id %}">
+                    Editar
+                </a>
+            </td>
+
+            <td>
+                <a class="table-link" href="{% url 'eliminar_alumno' alumno.id %}" style="color:red;">
+                    Eliminar
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">No hay alumnos registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 <br>
 <a href="{% url 'menu_principal' %}">Volver al menú</a>
+
+<!-- 🔎 Script buscador -->
+<script>
+document.getElementById("buscador").addEventListener("keyup", function() {
+    let filtro = this.value.toLowerCase();
+    let filas = document.querySelectorAll("#tablaAlumnos tbody tr");
+
+    filas.forEach(function(fila) {
+        let texto = fila.textContent.toLowerCase();
+        fila.style.display = texto.includes(filtro) ? "" : "none";
+    });
+});
+</script>
 
 {% endblock %}

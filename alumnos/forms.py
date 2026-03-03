@@ -2,6 +2,7 @@ from django import forms
 from .models import Alumno
 
 class AlumnoForm(forms.ModelForm):
+    monto = forms.DecimalField(max_digits=10, decimal_places=2)
     class Meta:
         model = Alumno
         fields = [
