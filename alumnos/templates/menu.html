@@ -30,6 +30,9 @@
         Corte de caja
     </a>
 
+    <a class="btn-link" href="{% url 'lista_productos' %}">
+        Venta de productos
+    </a>
 
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}

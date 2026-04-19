@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="{% url 'menu_principal' %}" class="btn-menu"> Volver al menú</a> 
+<style>
+    .productos-header {
+        margin-bottom: 18px;
+    }
+
+    .productos-header h2 {
+        margin-bottom: 6px;
+    }
+
+    .productos-subtitle {
+        color: #d0d0d0;
+        margin: 0;
+    }
+
+    .productos-grid {
+        display: grid;
+        gap: 16px;
+        margin-top: 18px;
+    }
+
+    .messages-list {
+        display: grid;
+        gap: 10px;
+        margin: 14px 0 18px;
+    }
+
+    .message-item {
+        padding: 14px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        box-shadow:
+            0 10px 24px rgba(0, 0, 0, 0.25),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .message-success {
+        background: rgba(40, 167, 69, 0.22);
+        color: #d9ffe4;
+    }
+
+    .message-error {
+        background: rgba(220, 53, 69, 0.22);
+        color: #ffd7dc;
+    }
+
+    .message-fade-out {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    .producto-card {
+        background: rgba(20, 20, 20, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        box-shadow:
+            0 10px 28px rgba(0, 0, 0, 0.45),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+    }
+
+    .producto-card summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 18px 16px;
+        font-size: 22px;
+        font-weight: 800;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .producto-card summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .producto-card summary::after {
+        content: "+";
+        font-size: 28px;
+        font-weight: 400;
+        color: #4da3ff;
+        flex-shrink: 0;
+        line-height: 1;
+    }
+
+    .producto-card[open] summary::after {
+        content: "−";
+    }
+
+    .producto-card-body {
+        padding: 0 16px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .producto-meta {
+        display: grid;
+        gap: 10px;
+        margin: 14px 0;
+    }
+
+    .producto-meta-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+    .producto-meta-label {
+        display: block;
+        color: #bdbdbd;
+        font-size: 13px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 400;
+    }
+
+    .producto-meta-value {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .producto-sections {
+        display: grid;
+        gap: 12px;
+    }
+
+    .producto-section {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .producto-section summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        font-weight: 600;
+        font-size: 17px;
+        color: #f4f4f4;
+    }
+
+    .producto-section summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .producto-section[open] summary {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .producto-section-body {
+        padding: 14px 16px 16px;
+    }
+
+    .producto-form button {
+        margin-top: 6px;
+        font-weight: 600;
+    }
+
+    .form-errors {
+        margin: 4px 0 8px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(220, 53, 69, 0.18);
+        color: #ffd7dc;
+        font-size: 14px;
+    }
+
+    .historial-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .historial-item {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+    .historial-item strong {
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .empty-state {
+        background: rgba(20, 20, 20, 0.45);
+        border-radius: 16px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 18px;
+    }
+</style>
+
+<div class="productos-header">
+    <h2>Venta de productos</h2>
+</div>
+
+{% if messages %}
+    <div class="messages-list">
+        {% for message in messages %}
+            <div class="message-item {% if message.tags == 'success' %}message-success{% else %}message-error{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="productos-grid">
+    {% for item in productos_con_totales %}
+        <details class="producto-card producto-toggle" {% if item.form.errors %}open{% endif %}>
+            <summary>{{ item.producto.nombre }}</summary>
+
+            <div class="producto-card-body">
+                <div class="producto-meta">
+                    <div class="producto-meta-item">
+                        <span class="producto-meta-label">Inventario disponible</span>
+                        <span class="producto-meta-value">{{ item.producto.stock_actual }}</span>
+                    </div>
+                    <div class="producto-meta-item">
+                        <span class="producto-meta-label">Total vendido</span>
+                        <span class="producto-meta-value">${{ item.total_vendido }}</span>
+                    </div>
+                </div>
+
+                <div class="producto-sections">
+                    <details class="producto-section" {% if item.form.errors %}open{% endif %}>
+                        <summary>Vender producto</summary>
+                        <div class="producto-section-body">
+                            <form class="producto-form" method="post" action="{% url 'vender_producto' item.producto.id %}">
+                                {% csrf_token %}
+
+                                {{ item.form.cantidad }}
+                                {% if item.form.cantidad.errors %}
+                                    <div class="form-errors">
+                                        {{ item.form.cantidad.errors }}
+                                    </div>
+                                {% endif %}
+
+                                {{ item.form.monto }}
+                                {% if item.form.monto.errors %}
+                                    <div class="form-errors">
+                                        {{ item.form.monto.errors }}
+                                    </div>
+                                {% endif %}
+
+                                {% if item.form.non_field_errors %}
+                                    <div class="form-errors">
+                                        {{ item.form.non_field_errors }}
+                                    </div>
+                                {% endif %}
+
+                                <button type="submit">Registrar venta</button>
+                            </form>
+                        </div>
+                    </details>
+
+                    <details class="producto-section">
+                        <summary>Historial de ventas</summary>
+                        <div class="producto-section-body">
+                            <div class="historial-list">
+                                {% for venta in item.historial %}
+                                    <div class="historial-item">
+                                        <strong>{{ venta.fecha_venta }}</strong>
+                                        <div>Cantidad: {{ venta.cantidad }}</div>
+                                        <div>Monto: ${{ venta.monto }}</div>
+                                    </div>
+                                {% empty %}
+                                    <div class="historial-item">
+                                        Este producto aún no tiene ventas registradas.
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </details>
+    {% empty %}
+        <div class="empty-state">
+            No hay productos disponibles.
+        </div>
+    {% endfor %}
+</div>
+
+<a class="back-link" href="{% url 'menu_principal' %}">Volver al menú</a>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const productoToggles = document.querySelectorAll(".producto-toggle");
+    const successMessages = document.querySelectorAll(".message-success");
+    const clearGlobalErrorMessages = () => {
+        document.querySelectorAll(".message-error").forEach((message) => {
+            message.remove();
+        });
+
+        const messagesList = document.querySelector(".messages-list");
+        if (messagesList && !messagesList.children.length) {
+            messagesList.remove();
+        }
+    };
+
+    const clearProductForm = (productToggle) => {
+        const form = productToggle.querySelector(".producto-form");
+        if (!form) return;
+
+        form.reset();
+    };
+
+    const clearProductErrors = (productToggle) => {
+        productToggle.querySelectorAll(".form-errors").forEach((error) => {
+            error.remove();
+        });
+    };
+
+    const closeInnerSections = (productToggle) => {
+        const innerDetails = productToggle.querySelectorAll(".producto-section");
+
+        innerDetails.forEach((detail) => {
+            detail.open = false;
+        });
+    };
+
+    productoToggles.forEach((toggle) => {
+        toggle.addEventListener("toggle", () => {
+            if (!toggle.open) {
+                closeInnerSections(toggle);
+                clearProductErrors(toggle);
+                clearProductForm(toggle);
+                clearGlobalErrorMessages();
+                return;
+            }
+
+            productoToggles.forEach((otherToggle) => {
+                if (otherToggle !== toggle) {
+                    otherToggle.open = false;
+                    closeInnerSections(otherToggle);
+                    clearProductErrors(otherToggle);
+                    clearProductForm(otherToggle);
+                }
+            });
+
+            clearGlobalErrorMessages();
+        });
+    });
+
+    successMessages.forEach((message) => {
+        setTimeout(() => {
+            message.classList.add("message-fade-out");
+
+            setTimeout(() => {
+                const messagesList = message.parentElement;
+                message.remove();
+
+                if (messagesList && !messagesList.children.length) {
+                    messagesList.remove();
+                }
+            }, 400);
+        }, 3500);
+    });
+});
+</script>
+{% endblock %}
