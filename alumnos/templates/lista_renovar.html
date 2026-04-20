@@ -9,49 +9,79 @@
 <!-- 🔍 BUSCADOR -->
 <input type="text" id="buscador" placeholder="Buscar alumno por nombre o apellido...">
 
-<table id="tablaAlumnos">
-    <tr>
-        <th>Nombre</th>
-        <th>Apellidos</th>
-        <th>Teléfono</th>
-        <th>Última fecha de pago</th>
-        <th>Vence</th>
-        <th>Renovar</th>
-    </tr>
+<p id="mensajeBusqueda">Escribe el nombre o apellido del alumno para mostrar resultados.</p>
 
-    {% for alumno in alumnos %}
-    <tr>
-        <td>{{ alumno.nombres }}</td>
-        <td>{{ alumno.apellidos }}</td>
-        <td>{{ alumno.telefono }}</td>
-        <td>{{ alumno.fecha_pago }}</td>
-        <td>{{ alumno.fecha_vencimiento }}</td>
-        <td>
-            <a class="table-link" href="{% url 'renovar_membresia' alumno.id %}">Renovar</a>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="6">No hay alumnos registrados.</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="table-wrapper" id="tablaWrapper" style="display: none;">
+    <table id="tablaAlumnos">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Teléfono</th>
+                <th>Última fecha de pago</th>
+                <th>Vence</th>
+                <th>Renovar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alumno in alumnos %}
+            <tr>
+                <td>{{ alumno.nombres }}</td>
+                <td>{{ alumno.apellidos }}</td>
+                <td>{{ alumno.telefono }}</td>
+                <td>{{ alumno.fecha_pago }}</td>
+                <td>{{ alumno.fecha_vencimiento }}</td>
+                <td>
+                    <a class="table-link" href="{% url 'renovar_membresia' alumno.id %}">Renovar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No hay alumnos registrados.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <br>
 <a href="{% url 'menu_principal' %}">Volver al menú</a>
 
 <script>
-document.getElementById("buscador").addEventListener("keyup", function() {
-    let filtro = this.value.toLowerCase();
-    let filas = document.querySelectorAll("#tablaAlumnos tr");
+const buscador = document.getElementById("buscador");
+const tablaWrapper = document.getElementById("tablaWrapper");
+const mensajeBusqueda = document.getElementById("mensajeBusqueda");
+const filas = document.querySelectorAll("#tablaAlumnos tbody tr");
 
-    filas.forEach(function(fila, index) {
-        if (index === 0) return;
+buscador.addEventListener("input", function() {
+    const filtro = this.value.trim().toLowerCase();
+    let coincidencias = 0;
 
-        let texto = fila.textContent.toLowerCase();
+    if (!filtro) {
+        tablaWrapper.style.display = "none";
+        mensajeBusqueda.textContent = "Escribe el nombre o apellido del alumno para mostrar resultados.";
 
-        fila.style.display = texto.includes(filtro) ? "" : "none";
+        filas.forEach(function(fila, index) {
+            fila.style.display = "none";
+        });
+        return;
+    }
+
+    tablaWrapper.style.display = "";
+
+    filas.forEach(function(fila) {
+        const texto = fila.textContent.toLowerCase();
+        const coincide = texto.includes(filtro);
+
+        fila.style.display = coincide ? "" : "none";
+        if (coincide) {
+            coincidencias += 1;
+        }
     });
+
+    mensajeBusqueda.textContent = coincidencias
+        ? "Selecciona el alumno que deseas renovar."
+        : "No se encontraron alumnos con esa búsqueda.";
 });
 </script>
 
